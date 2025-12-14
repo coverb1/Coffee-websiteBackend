@@ -7,39 +7,41 @@ export const addfoodcontroller = async (req, res) => {
     try {
         const { price, description, name } = req.body
         if (!price || !description || !name) {
-            return res.status(402).json({ message: "please provide us image,price and description" })
+            return res.status(402).json({ message: "please provide details" })
         }
-        // const image = req.file ? req.file.filename : null
-        if (!req.files||req.files.length===0) {
-            return res.status(401).json({ message: "no image seen" })
-        }
-        //upload to cloudinary
 
-        const uploadresults = await new Promise((resolve, reject) => {
-            const upload = cloudinary.uploader.upload_stream(
-                { folder: "foodImage" },
-                (error, results) => {
+        if (!req.files || req.files.length === 0) {
+            return res.status(402).json({ message: "no image seen" })
+        }
+
+        const uplodedImages = []
+
+        for (let file of req.files) {
+            const uploadResults = await new Promise((resolve, reject) => {
+                const upload = cloudinary.uploader.upload_stream({ folder: "foodImages" }, (error, results) => {
                     if (error) reject(error);
                     else resolve(results)
-
-                }
-            );
-            upload.end(file.buffer)
-        })
+                })
+                upload.end(file.buffer);
+            })
+            uplodedImages.push({
+                url: uploadResults.secure_url,
+                public_id: uploadResults.public_id
+            })
+        }
 
         const food = await foodtable.create({
-            image: uploadresults.secure_url,
-            public_id:uploadresults.public_id,
+            image: uplodedImages,
             price,
             description,
-            name,
-        })
+            name
+        });
         return res.status(200).json({ message: "food created well", food })
+
     } catch (error) {
-        return res.status(500).json({ error: error.message })
+        return res.status(500).json({ error: error.message });
     }
 }
-
 export const getexplorefood = async (req, res) => {
     try {
         const foods = await foodtable.find()
