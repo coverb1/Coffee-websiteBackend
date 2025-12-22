@@ -54,3 +54,16 @@ export const getexplorefood = async (req, res) => {
         return res.status(500).json({ error: error.message })
     }
 }
+
+export const getOnefoodDetails=async(req,res)=>{
+    const {id}=req.params;
+    try {
+        const product = await foodtable.findById(id)
+        if (!product) {
+            return res.status(402).json({message:"This food does not Exist"})
+        }
+        res.status(200).json({product})
+    } catch (error) {
+        return res.status(500).json({error:error.message})
+    }
+}

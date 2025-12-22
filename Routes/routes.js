@@ -1,6 +1,6 @@
 import express, { Router } from 'express'
 import uploads from '../Images/images.js'
-import { addfoodcontroller, getexplorefood } from '../Controller/food.controller.js'
+import { addfoodcontroller, getexplorefood, getOnefoodDetails } from '../Controller/food.controller.js'
 import { registercontroller } from '../Controller/register.controller.js'
 import { getuser, logincontroller, logoutuser } from '../Controller/login.controller.js'
 import { addtocart, countcartItem, deletecartItem, getaddedcart } from '../Controller/addtocart.controller.js'
@@ -21,6 +21,7 @@ routes.delete('/deleteItem/:id',userautha,deletecartItem)
 routes.get('/countcartitems',userautha,countcartItem)
 routes.post('/profile/upload',uploads.single('images'),userautha,uploadProfileImage)
 routes.delete('/profile/delete/:filename',userautha,deleteProfileImage)
+routes.get('/getOneFood/:id',userautha,getOnefoodDetails)
 
 export default routes
 

@@ -10,7 +10,6 @@ export const addtocart = async (req, res) => {
     try {
         const existinguser = await cartmodel.findOne({ user })
         if (existinguser) {
-
             existinguser.item.push({ foodId, name, quantity, price, image })
             await existinguser.save()
             return res.status(200).json({
