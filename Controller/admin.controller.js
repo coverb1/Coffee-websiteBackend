@@ -1,9 +1,9 @@
 import mongoose from "mongoose";
 import  bcrypt from "bcryptjs"
-import { userschema } from "../models/usermodel";
+import { userschema } from "../models/usermodel.js";
 
 
-export const adminController=async(res,req)=>{
+export const adminController=async(req,res)=>{
     try {
     const adminExist=await userschema.findOne({Role:"admin"})
     if (adminExist) {
@@ -13,7 +13,8 @@ export const adminController=async(res,req)=>{
     const harshedPassword=await bcrypt.hash("waguancofeee123",10);
 
     await userschema.create({
-        name:"waguancoffee",
+        Firstname:"waguan",
+        Secondname:"coffee",
         Email:"waguancoffee123@gmail.com",
         Password:harshedPassword,
         Role:"admin"

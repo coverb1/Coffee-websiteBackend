@@ -21,7 +21,11 @@ export const  logincontroller=async(req,res)=>{
        if (!ismatch) {
         return res.status(402).json({message:"please incorrect password"})
        }
-       const token=jwt.sign({id:user._id},process.env.JWT_SECRET,{expiresIn:'7d'})
+       let expiresTime='7d'
+       if (user.Role==="admin") {
+         expiresTime='15d'
+       }
+       const token=jwt.sign({id:user._id},process.env.JWT_SECRET,{expiresIn:expiresTime})
        await user.save()
        return res.status(200).json({message:"login succesfull",token,user:{id:user._id,role:user.Role}})
     } catch (error) {
