@@ -15,21 +15,23 @@ export const  logincontroller=async(req,res)=>{
     try {
        const user=await userschema.findOne({Email})
        if (!user) {
-        return res.status(402).json({message:"please user does not exist"})
+        return res.status(401).json({message:"please user does not exist"})
        }
        const ismatch=await bcrypt.compare(Password,user.Password)
        if (!ismatch) {
-        return res.status(402).json({message:"please incorrect password"})
+        return res.status(401).json({message:"please incorrect password"})
        }
        let expiresTime='7d'
-       if (user.Role==="admin") {
+       if (user.Role==="Admin") {
          expiresTime='15d'
        }
-       const token=jwt.sign({id:user._id},process.env.JWT_SECRET,{expiresIn:expiresTime})
-       await user.save()
+       const token=jwt.sign({id:user._id,Role:user.Role},
+         process.env.JWT_SECRET,
+         {expiresIn:expiresTime})
+      
        return res.status(200).json({message:"login succesfull",token,user:{id:user._id,role:user.Role}})
     } catch (error) {
-       return res.status(500).status({error:error.message}) 
+       return res.status(500).json({error:error.message}) 
     }
 }
 export const getuser=async(req,res)=>{

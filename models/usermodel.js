@@ -6,7 +6,12 @@ const usechema = new mongoose.Schema({
     Email: { type: String, required: true },
     Password: { type: String, required: true },
     Isaccountverfied: { type: Boolean, default: false },
-    Role: { type: String, default: "User" },
+    Role: { 
+        type: String,
+        enum:["User","Admin"],
+         default: "User"
+
+     },
     profilepicture: { type: String, default: null }
 })
 export const userschema = mongoose.model("userschema", usechema)
