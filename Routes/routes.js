@@ -7,7 +7,7 @@ import { addtocart, countcartItem, deletecartItem, getaddedcart } from '../Contr
 import { userautha } from '../middleware/userautha.js'
 import { deleteProfileImage, uploadProfileImage } from '../Controller/addprofile.controller.js'
 import { adminController } from '../Controller/admin.controller.js'
-import { adminMiddleware } from '../middleware/admin.js'
+
 
 const routes=express.Router()
 
@@ -25,6 +25,6 @@ routes.post('/profile/upload',uploads.single('images'),userautha,uploadProfileIm
 routes.delete('/profile/delete/:filename',userautha,deleteProfileImage)
 routes.get('/getOneFood/:id',userautha,getOnefoodDetails)
 routes.post('/admin',adminController)
-
+// routes.get('/getallfoods',getallfood)
 export default routes
 

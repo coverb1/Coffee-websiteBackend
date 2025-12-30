@@ -44,12 +44,12 @@ export const addfoodcontroller = async (req, res) => {
 }
 export const getexplorefood = async (req, res) => {
     try {
-        const foods = await foodtable.find()
-        console.log(foods)
-        if (!foods) {
+        const products = await foodtable.find()
+        console.log(products)
+        if (!products) {
             return res.status(402).json({ message: "There is no food found" })
         }
-        return res.status(200).json(foods)
+        return res.status(200).json(products)
     } catch (error) {
         return res.status(500).json({ error: error.message })
     }
@@ -67,3 +67,12 @@ export const getOnefoodDetails=async(req,res)=>{
         return res.status(500).json({error:error.message})
     }
 }
+
+// export const getallfood=async(req,res)=>{
+//     try {
+//         const products=await foodtable.find()
+//         return res.status(200).json({message:"alll foods are given well",products})
+//     } catch (error) {
+//         return res.status(500).json({message:""})
+//     }
+// }

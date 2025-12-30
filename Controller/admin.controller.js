@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import  bcrypt from "bcryptjs"
 import { userschema } from "../models/usermodel.js";
-
+import jwt from "jsonwebtoken";
 
 export const adminController=async(req,res)=>{
     try {
@@ -19,8 +19,9 @@ export const adminController=async(req,res)=>{
         Password:harshedPassword,
         Role:"Admin"
     })
-    res.status(200).json({message:"Admin created successiful"})
+   return  res.status(200).json({message:"Admin created successiful"})
+
     } catch (error) {
-        res.status(500).json({error:error.message})
+     return   res.status(500).json({error:error.message})
     }
 }
