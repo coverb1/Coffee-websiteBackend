@@ -9,6 +9,7 @@ import 'dotenv/config'
 import { fileURLToPath } from 'url';
 import path from 'path'
 import routes from './Routes/routes.js'
+import orderRouter from './Routes/orderRoutes.js';
 const app = express()
 const PORT =process.env.PORT||3000
 
@@ -27,6 +28,7 @@ mongoose.connect(MONGOOSE_URL)
     })
 //endpoints
 app.use('/api', routes)
+app.use('/api/order',orderRouter)
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 app.use('/api/uploads', express.static(path.join(__dirname, 'Images')))

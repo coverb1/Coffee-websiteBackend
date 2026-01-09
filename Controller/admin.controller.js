@@ -2,6 +2,8 @@ import mongoose from "mongoose";
 import  bcrypt from "bcryptjs"
 import { userschema } from "../models/usermodel.js";
 import jwt from "jsonwebtoken";
+import { execPath } from "process";
+import { foodtable } from "../models/food.js";
 
 export const adminController=async(req,res)=>{
     try {
@@ -24,4 +26,18 @@ export const adminController=async(req,res)=>{
     } catch (error) {
      return   res.status(500).json({error:error.message})
     }
+}
+
+export const AdmindeleteItem=async(req,res)=>{
+    const {id}=req.params
+try {
+     const updaFoodstore=await foodtable.findByIdAndDelete(id)
+
+    if (!updaFoodstore) {
+        return res.status(402).json({message:"No item found in Foodtable"})
+    }
+return res.status(200).json({message:"Item deleted well",updaFoodstore})
+} catch (error) {
+    return res.status(500).json({error})
+}
 }
