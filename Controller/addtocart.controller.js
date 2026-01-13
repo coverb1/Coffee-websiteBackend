@@ -7,10 +7,14 @@ export const addtocart = async (req, res) => {
     if (!foodId || !name || !price || !image) {
         return res.status(401).json({ message: 'please provide all details' })
     }
+
+    const itemTotal=price*quantity
+
     try {
         const existinguser = await cartmodel.findOne({ user })
         if (existinguser) {
             existinguser.item.push({ foodId, name, quantity, price, image })
+            existinguser.totalAmount+=itemTotal
             await existinguser.save()
             return res.status(200).json({
                 success: true,
@@ -21,7 +25,8 @@ export const addtocart = async (req, res) => {
         else {
             const newcart = await cartmodel.create({
                 user: user,
-                item: [{ foodId, name, quantity, price, image }]
+                item: [{ foodId, name, quantity, price, image }],
+                totalAmount:itemTotal
             })
             return res.status(200).json({
                 success: true,
@@ -51,15 +56,17 @@ export const deletecartItem = async (req, res) => {
     try {
         const { id } = req.params;
         const userId = req.userid
-        const updatecart = await cartmodel.findOneAndUpdate(
-            { user: userId },
-            { $pull: { item: { _id: id } } },
-            { new: true }
-        )
-        if (!updatecart) {
-            return res.status(401).json({ message: "No item found in database" })
-        }
-        return res.status(200).json({ message: "item removed well", updatecart })
+   const cart=await cartmodel.findOne({user:userId})
+   if (!cart) {
+    return res.status(401).json({message:"cart not found"})
+   }
+   const item=cart.item.find(i=i._id.toString() === id)
+   if (!item) {
+    return res.status(200).json({ message: "item not found" })
+   }
+       cart.totalAmount-=item.price*item.quantity 
+       cart.item=cart.item.filter(i=>i._id.toString() !== id)
+       await cart.save()
     } catch (error) {
         return res.status(500).json({ error: error.message })
     }

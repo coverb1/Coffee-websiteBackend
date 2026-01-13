@@ -4,7 +4,7 @@ import { userschema } from "../models/usermodel.js";
 // placing order using COD Method
 export const CodplaceOrder=async(req,res)=>{
 try {
-    const userId=req.req.userid
+    const userId=req.userid
 const {items,amount,address}=req.body;
 
 const orderData={
