@@ -1,42 +1,38 @@
 import { cartmodel } from "../models/cart.js";
 
 export const addtocart = async (req, res) => {
-    const user = req.userid
-    const { foodId, name, quantity = 1, price, image } = req.body
-    console.log(user)
-    if (!foodId || !name || !price || !image) {
-        return res.status(401).json({ message: 'please provide all details' })
-    }
+try {
+    const user=req.userid
+    const {foodId,name,price,image,quantity=1}=req.body
 
-    const itemTotal=price*quantity
-
-    try {
-        const existinguser = await cartmodel.findOne({ user })
-        if (existinguser) {
-            existinguser.item.push({ foodId, name, quantity, price, image })
-            existinguser.totalAmount+=itemTotal
-            await existinguser.save()
-            return res.status(200).json({
-                success: true,
-                message: 'item added',
-                cartitem: existinguser
-            })
-        }
-        else {
-            const newcart = await cartmodel.create({
-                user: user,
-                item: [{ foodId, name, quantity, price, image }],
-                totalAmount:itemTotal
-            })
-            return res.status(200).json({
-                success: true,
-                message: "cartcreated",
-                cartitem: newcart
-            })
-        }
-    } catch (error) {
-        return res.status(500).json({ error: error.message })
+    if (!foodId||!name||!price||!image||!quantity) {
+        return res.status(400).json({message:"Please provide all details"})
     }
+    const cart=await cartmodel.findOne({user})
+if (cart) {
+    const item=cart.item.find(i=>i.foodId===foodId)
+
+    if (item) {
+       item.quantity +=quantity
+    }
+    else{
+        cart.item.push({foodId,name,price,image,quantity})
+    }
+ // recalculate totalAmount
+    cart.totalAmount=cart.item.reduce((sum,i)=>sum+(i.price*i.quantity),0)
+    await cart.save()
+    return res.status(200).json({message:"cart updated",cart})
+}
+// if Cart does not exist
+const newcart=await cartmodel.create({
+    user,
+    item:[{foodId,name,price,quantity}],
+    totalAmount:price*quantity
+})
+return res.status(200).json({message:"Cart Created",newcart})
+} catch (error) {
+    return res.status(500).json({erro:error.message})
+}
 }
 
 export const getaddedcart = async (req, res) => {
